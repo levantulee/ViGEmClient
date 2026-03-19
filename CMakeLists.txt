@@ -39,10 +39,14 @@ add_library(ViGEmClient STATIC
 setup_include_directories(ViGEmClient)
 add_library(ViGEmClient::ViGEmClient ALIAS ViGEmClient)
 
-# Client.h contains Windows-1252 curly-quote characters in comments.
-# Suppress C4828 (illegal character in UTF-8 source) for this third-party target only.
+# Suppress warnings from third-party ViGEm source and headers.
+# C4828: Client.h contains Windows-1252 curly-quote characters in comments.
+# C4189: 'error' local variable initialized but not referenced (ViGEmClient.cpp:204).
+# C4505: 'to_hex' unreferenced internal function removed (ViGEmClient.cpp:114).
+# C4828 is PUBLIC so it suppresses when consumers include Client.h.
 if(MSVC)
-    target_compile_options(ViGEmClient PRIVATE /wd4828)
+    target_compile_options(ViGEmClient PRIVATE /wd4189 /wd4505)
+    target_compile_options(ViGEmClient PUBLIC  /wd4828)
 endif()
 
 # Setup dynamic library if requested and set output name to ViGEmClient.dll
